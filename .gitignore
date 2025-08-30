@@ -1,0 +1,7 @@
+node_modules/
+.env*
+.DS_Store
+workers/node_modules/
+workers/.env*
+workers/.DS_Store
+workers/.wrangler/

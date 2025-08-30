@@ -1,0 +1,21 @@
+{
+  "name": "web3-college-workers",
+  "version": "1.0.0",
+  "description": "Cloudflare Workers for Web3 College platform data storage",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.22.1",
+    "jest": "^29.7.0"
+  },
+  "keywords": ["cloudflare", "workers", "web3", "education"],
+  "author": "Web3 College Team",
+  "license": "MIT"
+}
