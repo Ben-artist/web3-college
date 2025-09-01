@@ -1,13 +1,8 @@
 import React from 'react'
-import {
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  Box,
-  Chip,
-  Avatar,
-} from '@mui/material'
+import { Card, CardContent } from './ui/card'
+import { Button } from './ui/button'
+import { Badge } from './ui/badge'
+import { Avatar, AvatarFallback } from './ui/avatar'
 import { Course } from '../types'
 
 interface CourseCardProps {
@@ -36,90 +31,73 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
   return (
     <Card
-      sx={{
-        height: '100%',
-        position: 'relative',
-        backgroundColor: course.isPurchased ? '#e8f5e8' : '#fff9c4',
-        border: `2px solid ${course.isPurchased ? '#4caf50' : '#ff9800'}`,
-        '&:hover': {
-          boxShadow: 4,
-          transform: 'translateY(-2px)',
-        },
-        transition: 'all 0.3s ease',
-      }}
+      className={`h-full relative transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
+        course.isPurchased 
+          ? 'bg-green-50 border-2 border-green-500' 
+          : 'bg-yellow-50 border-2 border-orange-500'
+      }`}
     >
       {/* 课程状态标签 */}
       {course.isPurchased && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: -2,
-            right: -2,
-            width: 0,
-            height: 0,
-            borderLeft: '20px solid transparent',
-            borderRight: '20px solid transparent',
-            borderBottom: '20px solid #4caf50',
-            transform: 'rotate(45deg)',
-          }}
-        />
+        <div className="absolute -top-2 -right-2 w-0 h-0 border-l-[20px] border-r-[20px] border-b-[20px] border-l-transparent border-r-transparent border-b-green-500 transform rotate-45" />
       )}
 
-      <CardContent sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <CardContent className="p-4 h-full flex flex-col">
         {/* 课程标题 */}
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+        <h3 className="text-lg font-semibold mb-2 text-gray-900">
           {course.title}
-        </Typography>
+        </h3>
 
-        {/* 课程内容 */}
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            mb: 2,
-            flexGrow: 1,
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
-          {course.content}
-        </Typography>
+        {/* 课程描述 - 支持背景图 */}
+        <div className="mb-4 flex-grow relative">
+          {course.cover && (
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 rounded-md"
+              style={{ backgroundImage: `url(${course.cover})` }}
+            />
+          )}
+          <p
+            className={`relative text-sm text-gray-600 line-clamp-3 ${
+              course.cover ? 'p-2 bg-white/80 rounded-md' : ''
+            }`}
+          >
+            {course.description || course.content}
+          </p>
+        </div>
 
         {/* 课程信息 */}
-        <Box sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <Avatar
-              sx={{ width: 24, height: 24, fontSize: '0.75rem', mr: 1 }}
-            >
-              {course.author.slice(0, 2)}
+        <div className="mb-4 space-y-2">
+          <div className="flex items-center mb-2">
+            <Avatar className="w-6 h-6 text-xs mr-2">
+              <AvatarFallback className="text-xs">
+                {course.author.slice(0, 2)}
+              </AvatarFallback>
             </Avatar>
-            <Typography variant="body2" color="text.secondary">
+            <span className="text-sm text-gray-600">
               {course.author}
-            </Typography>
-          </Box>
+            </span>
+          </div>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">
               创建时间: {formatDate(course.createdAt)}
-            </Typography>
-            <Chip
-              label={formatPrice(course.price)}
-              color={course.isPurchased ? 'success' : 'primary'}
-              size="small"
-              variant={course.isPurchased ? 'filled' : 'outlined'}
-            />
-          </Box>
-        </Box>
+            </span>
+            <Badge
+              variant={course.isPurchased ? "default" : "outline"}
+              className={course.isPurchased ? "bg-green-500" : ""}
+            >
+              {formatPrice(course.price)}
+            </Badge>
+          </div>
+        </div>
 
         {/* 操作按钮 */}
-        <Box sx={{ display: 'flex', gap: 1, mt: 'auto' }}>
+        <div className="flex gap-2 mt-auto">
           <Button
-            variant="outlined"
-            size="small"
+            variant="outline"
+            size="sm"
             onClick={() => onViewDetails(course)}
-            fullWidth
+            className="flex-1"
           >
             详情
           </Button>
@@ -127,26 +105,25 @@ const CourseCard: React.FC<CourseCardProps> = ({
           {showPurchaseButton && (
             course.isPurchased ? (
               <Button
-                variant="contained"
-                size="small"
+                variant="default"
+                size="sm"
                 disabled
-                fullWidth
-                sx={{ backgroundColor: '#4caf50' }}
+                className="flex-1 bg-green-500 hover:bg-green-600"
               >
                 已购买
               </Button>
             ) : (
               <Button
-                variant="contained"
-                size="small"
+                variant="default"
+                size="sm"
                 onClick={() => onPurchase(course.id)}
-                fullWidth
+                className="flex-1"
               >
                 购买课程
               </Button>
             )
           )}
-        </Box>
+        </div>
       </CardContent>
     </Card>
   )

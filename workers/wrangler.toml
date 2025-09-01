@@ -9,13 +9,11 @@ ENVIRONMENT = "development"
 # KV命名空间配置
 [[kv_namespaces]]
 binding = "COURSE_DATA"
-id = "your-kv-namespace-id"
-preview_id = "your-preview-kv-namespace-id"
+id = "982523e646134467af3366beeea5791a"
 
 [[kv_namespaces]]
 binding = "PURCHASE_RECORDS"
-id = "your-purchase-kv-namespace-id"
-preview_id = "your-preview-purchase-kv-namespace-id"
+id = "0b6554d2d54f4064acedf02bfe9e8a20"
 
 # 开发环境配置
 [env.development]

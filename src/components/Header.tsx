@@ -3,43 +3,28 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useWallet } from '../hooks/useWallet'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { Avatar, AvatarFallback } from './ui/avatar'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { Wallet, Network, BookOpen, User } from 'lucide-react'
+
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { walletState, currentNetwork, connectWallet, connectors, availableNetworks, switchNetwork } = useWallet()
-  
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-
-  // 处理钱包菜单
-  const handleWalletMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
+  const { walletState, currentNetwork, connectWallet, disconnectWallet, connectors, availableNetworks, switchNetwork } = useWallet()
 
   // 连接钱包
   const handleConnectWallet = async (connector: any) => {
     try {
       await connectWallet(connector)
-      handleClose()
     } catch (error) {
       console.error('连接钱包失败:', error)
     }
   }
 
-  // 断开钱包连接
-  const handleDisconnect = () => {
-    // 这里可以添加断开钱包的逻辑
-    handleClose()
+  const handleDisconnectWallet = async () => {
+    await disconnectWallet()
   }
-
-
 
   // 切换网络
   const handleNetworkChange = async (chainId: number) => {
@@ -59,7 +44,7 @@ const Header: React.FC = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         {/* 应用标题 */}
-        <div 
+        <div
           className="flex items-center space-x-2 cursor-pointer"
           onClick={() => navigate('/')}
         >
@@ -88,6 +73,8 @@ const Header: React.FC = () => {
         </nav>
 
         <div className="ml-auto flex items-center space-x-4">
+
+
           {/* 网络选择器 */}
           <div className="flex items-center space-x-2">
             <Network className="h-4 w-4 text-muted-foreground" />
@@ -104,7 +91,6 @@ const Header: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-
           {/* 钱包信息 */}
           {walletState.isConnected ? (
             <div className="flex items-center space-x-3">
@@ -112,11 +98,10 @@ const Header: React.FC = () => {
               <Badge variant="outline" className="px-3 py-1">
                 {walletState.balance || '0'} ETH
               </Badge>
-              
+
               {/* 钱包地址 */}
               <Button
                 variant="ghost"
-                onClick={handleWalletMenu}
                 className="flex items-center space-x-2"
               >
                 <Avatar className="h-6 w-6">
@@ -129,18 +114,15 @@ const Header: React.FC = () => {
                 </span>
               </Button>
 
-              {/* 钱包菜单 */}
-              {anchorEl && (
-                <div className="absolute top-16 right-4 bg-popover border rounded-md shadow-lg p-2">
-                  <Button
-                    variant="ghost"
-                    onClick={handleDisconnect}
-                    className="w-full justify-start"
-                  >
-                    断开连接
-                  </Button>
-                </div>
-              )}
+              <Button
+                variant="ghost"
+                onClick={handleDisconnectWallet}
+                className="flex items-center space-x-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                <Wallet className="h-4 w-4" />
+                <span>断开连接</span>
+              </Button>
+
             </div>
           ) : (
             <Button

@@ -4,6 +4,10 @@ export interface Course {
   title: string
   content: string
   price: number
+  description?: string
+  cover?: string
+  buyer: string[]
+  txHash?: string
   author: string
   authorAddress: string
   isPurchased: boolean

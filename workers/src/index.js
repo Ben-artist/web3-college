@@ -104,6 +104,12 @@ async function handlePurchases(request, env, corsHeaders) {
     return await recordPurchase(request, env, corsHeaders);
   }
 
+  // 🆕 添加查询学生购买标记接口
+  if (method === 'GET' && path.match(/^\/api\/purchases\/check\/(\d+)\/(0x[a-fA-F0-9]{40})$/)) {
+    const [, courseId, studentAddress] = path.match(/^\/api\/purchases\/check\/(\d+)\/(0x[a-fA-F0-9]{40})$/);
+    return await checkStudentPurchase(courseId, studentAddress, env, corsHeaders);
+  }
+
   return new Response(JSON.stringify({ error: '不支持的请求方法' }), {
     headers: corsHeaders,
     status: 405
@@ -127,8 +133,7 @@ async function createCourse(request, env, corsHeaders) {
       });
     }
 
-    const { address, courseId, content, title, cost } = body;
-
+    const { address, courseId, content, title, cost, description, cover, txHash } = body;
     // 简单验证必要字段
     if (!address || !courseId || !content || !title || cost === undefined) {
       return new Response(JSON.stringify({ 
@@ -156,19 +161,64 @@ async function createCourse(request, env, corsHeaders) {
     const existingCourseIndex = userCourses.findIndex(course => course.courseId === courseId);
     
     if (existingCourseIndex !== -1) {
-      // 更新现有课程
-      userCourses[existingCourseIndex] = { courseId, content, title, cost };
-    } else {
-      // 添加新课程
-      userCourses.push({ courseId, content, title, cost });
+      // 课程已存在，不允许更新
+      return new Response(JSON.stringify({ 
+        error: '课程已存在', 
+        message: '该课程ID已存在，请使用不同的课程ID'
+      }), {
+        headers: corsHeaders,
+        status: 409
+      });
     }
+
+    // 创建新课程
+    const newCourse = { 
+      courseId, 
+      content, 
+      title, 
+      cost, 
+      description: description || '', 
+      cover: cover || '',
+      buyer: [address], // 创建者默认已购买
+      txHash: txHash || ''
+    };
+    
+    // 🆕 记录新课程对象
+    console.log('📝 创建的新课程对象:')
+    console.log(JSON.stringify(newCourse, null, 2))
+    
+    userCourses.push(newCourse);
 
     // 保存到存储
     await env.COURSE_DATA.put(address, JSON.stringify(userCourses));
+    console.log('✅ 课程数据已保存到存储')
+
+    // 同时更新所有课程的汇总数据
+    await updateAllCoursesSummary(env, courseId, content, title, cost, address, description, cover, [address], txHash);
+    console.log('✅ 课程汇总数据已更新')
+
+    // 🆕 验证存储后的数据
+    const storedData = await env.COURSE_DATA.get(address);
+    console.log('📝 存储后的原始数据:')
+    console.log(storedData)
+    
+    if (storedData) {
+      const parsedStoredData = JSON.parse(storedData);
+      console.log('📝 存储后的解析数据:')
+      console.log(JSON.stringify(parsedStoredData, null, 2))
+      
+      // 检查最后一个课程是否包含description和cover
+      const lastCourse = parsedStoredData[parsedStoredData.length - 1];
+      if (lastCourse) {
+        console.log('📝 最后存储的课程字段检查:')
+        console.log('description:', lastCourse.description)
+        console.log('cover:', lastCourse.cover)
+      }
+    }
 
     return new Response(JSON.stringify({
       success: true,
-      message: existingCourseIndex !== -1 ? '课程更新成功' : '课程创建成功',
+      message: '课程创建成功',
       data: { address, courses: userCourses }
     }), {
       headers: corsHeaders,
@@ -190,11 +240,13 @@ async function createCourse(request, env, corsHeaders) {
 // 获取用户创建的课程列表
 async function getUserCourses(address, env, corsHeaders) {
   try {
+    console.log('📝 查询用户课程 - 地址:', address)
+    
     // 获取用户课程数据
     const coursesData = await env.COURSE_DATA.get(address);
-    
     // 如果没有数据，返回空数组
     if (!coursesData) {
+      console.log('📝 用户没有课程数据，返回空数组')
       return new Response(JSON.stringify({ 
         address, 
         courses: [] 
@@ -206,12 +258,12 @@ async function getUserCourses(address, env, corsHeaders) {
 
     // 解析课程数据
     const courses = JSON.parse(coursesData);
-    
     // 返回用户课程列表
-    return new Response(JSON.stringify({
+    const response = {
       address,
       courses
-    }), {
+    }
+    return new Response(JSON.stringify(response), {
       headers: corsHeaders,
       status: 200
     });
@@ -231,11 +283,32 @@ async function getUserCourses(address, env, corsHeaders) {
 // 获取所有课程列表
 async function getAllCourses(env, corsHeaders) {
   try {
-    // 注意：这里需要实现一个更高效的方式来获取所有课程
-    // 在实际生产环境中，可能需要使用D1数据库或其他更适合的存储方案
-    // 这里提供一个基础实现
+    // 由于KV存储的限制，我们需要遍历所有可能的地址来获取课程
+    // 这里我们使用一个特殊的键来存储所有课程的汇总信息
     
-    const allCourses = [];
+    // 首先尝试获取汇总数据
+    const summaryData = await env.COURSE_DATA.get('all_courses_summary');
+    let allCourses = [];
+    
+    if (summaryData) {
+      try {
+        allCourses = JSON.parse(summaryData);
+      } catch (error) {
+        allCourses = [];
+      }
+    }
+    
+    // 如果没有汇总数据，返回空数组
+    if (allCourses.length === 0) {
+      return new Response(JSON.stringify({
+        courses: [],
+        total: 0,
+        message: '暂无课程数据'
+      }), {
+        headers: corsHeaders,
+        status: 200
+      });
+    }
     
     return new Response(JSON.stringify({
       courses: allCourses,
@@ -274,7 +347,7 @@ async function recordPurchase(request, env, corsHeaders) {
       });
     }
 
-    const { courseId, creator, buyer, title, cost } = body;
+    const { courseId, creator, buyer, title, cost, txHash } = body;
 
     // 简单验证必要字段
     if (!courseId || !creator || !buyer || !title || cost === undefined) {
@@ -310,6 +383,7 @@ async function recordPurchase(request, env, corsHeaders) {
       if (!existingRecord.buyers.includes(buyer)) {
         existingRecord.buyers.push(buyer);
         existingRecord.count = existingRecord.buyers.length;
+        existingRecord.txHash = txHash || existingRecord.txHash;
       }
       
       purchaseRecords[existingRecordIndex] = existingRecord;
@@ -321,7 +395,8 @@ async function recordPurchase(request, env, corsHeaders) {
         buyers: [buyer],
         title,
         count: 1,
-        cost
+        cost,
+        txHash: txHash || ''
       };
       
       purchaseRecords.push(newRecord);
@@ -330,10 +405,13 @@ async function recordPurchase(request, env, corsHeaders) {
     // 保存到存储
     await env.PURCHASE_RECORDS.put('all', JSON.stringify(purchaseRecords));
 
+    // 同时更新课程创建者的课程数据中的buyer数组
+    await updateCourseBuyers(env, creator, courseId, buyer);
+
     return new Response(JSON.stringify({
       success: true,
       message: '购买记录保存成功',
-      data: { courseId, creator, buyer, title, cost }
+      data: { courseId, creator, buyer, title, cost, txHash }
     }), {
       headers: corsHeaders,
       status: 200
@@ -348,6 +426,45 @@ async function recordPurchase(request, env, corsHeaders) {
       headers: corsHeaders,
       status: 500
     });
+  }
+}
+
+// 更新所有课程汇总数据
+async function updateAllCoursesSummary(env, courseId, content, title, cost, address, description, cover, buyer, txHash) {
+  try {
+    // 获取现有的汇总数据
+    const summaryData = await env.COURSE_DATA.get('all_courses_summary');
+    let allCourses = [];
+    
+    if (summaryData) {
+      try {
+        allCourses = JSON.parse(summaryData);
+      } catch (error) {
+        allCourses = [];
+      }
+    }
+
+    // 添加新课程到汇总数据
+    allCourses.push({
+      courseId,
+      content,
+      title,
+      cost,
+      address,
+      description: description || '',
+      cover: cover || '',
+      buyer: buyer,
+      txHash: txHash || '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+
+    // 保存汇总数据
+    await env.COURSE_DATA.put('all_courses_summary', JSON.stringify(allCourses));
+    
+  } catch (error) {
+    console.error('更新课程汇总失败:', error);
+    // 这里不抛出错误，因为主流程不应该因为汇总更新失败而失败
   }
 }
 
@@ -430,6 +547,117 @@ async function getAllPurchases(env, corsHeaders) {
     console.error('获取所有购买记录错误:', error);
     return new Response(JSON.stringify({ 
       error: '获取所有购买记录失败', 
+      message: error.message 
+    }), {
+      headers: corsHeaders,
+      status: 500
+    });
+  }
+}
+
+// 🆕 更新课程数据中的buyer数组
+async function updateCourseBuyers(env, creatorAddress, courseId, buyerAddress) {
+  try {
+    // 获取创建者的课程数据
+    const creatorCourses = await env.COURSE_DATA.get(creatorAddress);
+    if (!creatorCourses) {
+      return; // 没有课程数据，无需处理
+    }
+
+    let courses = [];
+    try {
+      courses = JSON.parse(creatorCourses);
+    } catch (error) {
+      console.error('解析创建者课程数据失败:', error);
+      return;
+    }
+
+    // 查找对应课程
+    const courseIndex = courses.findIndex(course => course.courseId === courseId);
+    if (courseIndex === -1) {
+      return; // 课程不存在，无需处理
+    }
+
+    // 更新buyer数组
+    const course = courses[courseIndex];
+    if (!course.buyer) {
+      course.buyer = [];
+    }
+    
+    // 如果买家不在列表中，添加进去
+    if (!course.buyer.includes(buyerAddress)) {
+      course.buyer.push(buyerAddress);
+    }
+
+    // 保存更新后的课程数据
+    await env.COURSE_DATA.put(creatorAddress, JSON.stringify(courses));
+
+    // 同时更新全局汇总数据
+    await updateAllCoursesSummary(env, courseId, course.content, course.title, course.cost, creatorAddress, course.description, course.cover, course.buyer, course.txHash);
+    
+  } catch (error) {
+    console.error('更新课程buyer数组失败:', error);
+    // 这里不抛出错误，因为主流程不应该因为同步更新失败而失败
+  }
+}
+
+// 🆕 检查学生是否购买过特定课程
+async function checkStudentPurchase(courseId, studentAddress, env, corsHeaders) {
+  try {
+    // 获取所有购买记录
+    const purchaseRecords = await env.PURCHASE_RECORDS.get('all');
+    
+    // 如果没有记录，返回未购买
+    if (!purchaseRecords) {
+      return new Response(JSON.stringify({
+        courseId,
+        studentAddress,
+        hasPurchased: false,
+        message: '该学生未购买过任何课程'
+      }), {
+        headers: corsHeaders,
+        status: 200
+      });
+    }
+
+    // 解析购买记录
+    const records = JSON.parse(purchaseRecords);
+    
+    // 查找特定课程的记录
+    const courseRecord = records.find(record => record.courseId === courseId);
+    
+    // 如果没有找到该课程的记录，返回未购买
+    if (!courseRecord) {
+      return new Response(JSON.stringify({
+        courseId,
+        studentAddress,
+        hasPurchased: false,
+        message: '该课程暂无购买记录'
+      }), {
+        headers: corsHeaders,
+        status: 200
+      });
+    }
+
+    // 检查学生是否在购买者列表中
+    const hasPurchased = courseRecord.buyers.includes(studentAddress);
+    
+    return new Response(JSON.stringify({
+      courseId,
+      studentAddress,
+      hasPurchased,
+      courseTitle: courseRecord.title,
+      courseCost: courseRecord.cost,
+      message: hasPurchased ? '该学生已购买此课程' : '该学生未购买此课程'
+    }), {
+      headers: corsHeaders,
+      status: 200
+    });
+
+  } catch (error) {
+    console.error('检查学生购买记录错误:', error);
+    return new Response(JSON.stringify({ 
+      error: '检查学生购买记录失败', 
       message: error.message 
     }), {
       headers: corsHeaders,

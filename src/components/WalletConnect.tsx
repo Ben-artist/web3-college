@@ -1,40 +1,22 @@
 import React, { useState } from 'react'
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  Box,
-  Alert,
-} from '@mui/material'
-import {
-  AccountBalanceWallet as WalletIcon,
-  Smartphone as MobileIcon,
-  Computer as DesktopIcon,
-  Link as LinkIcon,
-} from '@mui/icons-material'
+import { Button } from './ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
+import { Alert, AlertDescription } from './ui/alert'
+import { Wallet, Smartphone, Monitor, Link as LinkIcon } from 'lucide-react'
 import { useConnect, useDisconnect } from 'wagmi'
 import { useWallet } from '../hooks/useWallet'
 
 interface WalletConnectProps {
-  variant?: 'text' | 'outlined' | 'contained'
-  size?: 'small' | 'medium' | 'large'
+  variant?: 'default' | 'outline' | 'ghost'
+  size?: 'default' | 'sm' | 'lg'
 }
 
 const WalletConnect: React.FC<WalletConnectProps> = ({
-  variant = 'outlined',
-  size = 'medium',
+  variant = 'outline',
+  size = 'default',
 }) => {
   const { walletState, disconnectWallet } = useWallet()
   const { connect, connectors, error, isPending } = useConnect()
-  const { disconnect } = useDisconnect()
   
   const [showDialog, setShowDialog] = useState(false)
 
@@ -51,8 +33,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({
   // 处理断开连接
   const handleDisconnect = async () => {
     try {
-      await disconnect()
-      disconnectWallet()
+      await disconnectWallet() // 使用统一的断开连接函数
     } catch (error) {
       console.error('断开连接失败:', error)
     }
@@ -61,10 +42,10 @@ const WalletConnect: React.FC<WalletConnectProps> = ({
   // 获取钱包图标
   const getWalletIcon = (connector: any) => {
     const name = connector.name.toLowerCase()
-    if (name.includes('metamask')) return <WalletIcon />
-    if (name.includes('walletconnect')) return <LinkIcon />
-    if (name.includes('mobile')) return <MobileIcon />
-    return <DesktopIcon />
+    if (name.includes('metamask')) return <Wallet className="h-4 w-4" />
+    if (name.includes('walletconnect')) return <LinkIcon className="h-4 w-4" />
+    if (name.includes('mobile')) return <Smartphone className="h-4 w-4" />
+    return <Monitor className="h-4 w-4" />
   }
 
   // 获取钱包名称
@@ -83,7 +64,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({
         variant={variant}
         size={size}
         onClick={handleDisconnect}
-        color="inherit"
+        className="text-inherit"
       >
         断开连接
       </Button>
@@ -92,70 +73,54 @@ const WalletConnect: React.FC<WalletConnectProps> = ({
 
   return (
     <>
-      <Button
-        variant={variant}
-        size={size}
-        onClick={() => setShowDialog(true)}
-        color="inherit"
-      >
-        连接钱包
-      </Button>
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogTrigger asChild>
+          <Button
+            variant={variant}
+            size={size}
+            className="text-inherit"
+          >
+            连接钱包
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>选择钱包</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-3">
+            {connectors.map((connector) => (
+              <div
+                key={connector.uid}
+                className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                onClick={() => handleConnect(connector)}
+              >
+                <div className="flex items-center space-x-3">
+                  {getWalletIcon(connector)}
+                  <span className="font-medium">{getWalletName(connector)}</span>
+                </div>
+                {connector.ready ? (
+                  <span className="text-xs text-green-600">可用</span>
+                ) : null}
+              </div>
+            ))}
+          </div>
 
-      <Dialog
-        open={showDialog}
-        onClose={() => setShowDialog(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <WalletIcon />
-            <Typography variant="h6">选择钱包</Typography>
-          </Box>
-        </DialogTitle>
-        
-        <DialogContent>
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error.message}
+            <Alert variant="destructive">
+              <AlertDescription>
+                连接失败: {error.message}
+              </AlertDescription>
             </Alert>
           )}
-          
-          <List>
-            {connectors.map((connector) => (
-              <ListItem key={connector.uid} disablePadding>
-                <ListItemButton
-                  onClick={() => handleConnect(connector)}
-                  disabled={!connector.ready || isPending}
-                >
-                  <ListItemIcon>
-                    {getWalletIcon(connector)}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={getWalletName(connector)}
-                    secondary={
-                      !connector.ready
-                        ? '不可用'
-                        : isPending
-                        ? '连接中...'
-                        : '点击连接'
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
 
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-            推荐使用 MetaMask 钱包以获得最佳体验
-          </Typography>
+          {isPending && (
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
+              <p className="text-sm text-gray-600 mt-2">正在连接...</p>
+            </div>
+          )}
         </DialogContent>
-        
-        <DialogActions>
-          <Button onClick={() => setShowDialog(false)}>
-            取消
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   )

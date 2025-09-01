@@ -1,38 +1,29 @@
 import React from 'react'
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Box,
-  Typography,
-  Chip,
-} from '@mui/material'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { Badge } from './ui/badge'
 import { useWallet } from '../hooks/useWallet'
-import { getNetworkName } from '../utils/blockchain'
 
 interface NetworkSelectorProps {
-  size?: 'small' | 'medium'
+  size?: 'sm' | 'md' | 'lg'
   showLabel?: boolean
 }
 
 const NetworkSelector: React.FC<NetworkSelectorProps> = ({
-  size = 'medium',
+  size = 'md',
   showLabel = true,
 }) => {
   const { currentNetwork, availableNetworks, switchNetwork } = useWallet()
 
   // 处理网络切换
-  const handleNetworkChange = (event: any) => {
-    const chainId = parseInt(event.target.value)
-    switchNetwork(chainId)
+  const handleNetworkChange = (chainId: string) => {
+    switchNetwork(parseInt(chainId))
   }
 
   // 获取网络状态颜色
   const getNetworkStatusColor = (chainId: number) => {
-    if (chainId === 1) return 'success' // 主网
-    if (chainId === 11155111) return 'warning' // 测试网
-    return 'info' // 本地网络
+    if (chainId === 1) return 'bg-green-500' // 主网
+    if (chainId === 11155111) return 'bg-yellow-500' // 测试网
+    return 'bg-blue-500' // 本地网络
   }
 
   // 获取网络状态文本
@@ -43,51 +34,53 @@ const NetworkSelector: React.FC<NetworkSelectorProps> = ({
   }
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-      <FormControl size={size} sx={{ minWidth: 120 }}>
+    <div className="flex items-center gap-3">
+      <div className="min-w-[120px]">
         {showLabel && (
-          <InputLabel id="network-select-label">网络</InputLabel>
+          <label className="text-sm font-medium mb-2 block">网络</label>
         )}
         <Select
-          labelId="network-select-label"
-          value={currentNetwork?.id || ''}
-          label={showLabel ? '网络' : ''}
-          onChange={handleNetworkChange}
-          displayEmpty
+          value={currentNetwork?.id?.toString() || ''}
+          onValueChange={handleNetworkChange}
         >
-          {availableNetworks.map((network) => (
-            <MenuItem key={network.id} value={network.id}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="body2">
-                  {network.name}
-                </Typography>
-                <Chip
-                  label={getNetworkStatusText(network.id)}
-                  size="small"
-                  color={getNetworkStatusColor(network.id)}
-                  variant="outlined"
-                />
-              </Box>
-            </MenuItem>
-          ))}
+          <SelectTrigger className={`${size === 'sm' ? 'h-8' : size === 'lg' ? 'h-12' : 'h-10'}`}>
+            <SelectValue placeholder="选择网络" />
+          </SelectTrigger>
+          <SelectContent>
+            {availableNetworks.map((network) => (
+              <SelectItem key={network.id} value={network.id.toString()}>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">
+                    {network.name}
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className={`text-xs ${getNetworkStatusColor(network.id)} text-white border-0`}
+                  >
+                    {getNetworkStatusText(network.id)}
+                  </Badge>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
-      </FormControl>
+      </div>
 
       {/* 当前网络状态显示 */}
       {currentNetwork && (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Chip
-            label={currentNetwork.name}
-            size="small"
-            color={getNetworkStatusColor(currentNetwork.id)}
-            variant="filled"
-          />
-          <Typography variant="caption" color="text.secondary">
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="default"
+            className={`text-xs ${getNetworkStatusColor(currentNetwork.id)}`}
+          >
+            {currentNetwork.name}
+          </Badge>
+          <span className="text-xs text-gray-500">
             {currentNetwork.currency}
-          </Typography>
-        </Box>
+          </span>
+        </div>
       )}
-    </Box>
+    </div>
   )
 }
 

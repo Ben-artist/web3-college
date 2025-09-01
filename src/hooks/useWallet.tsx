@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { useAccount, useBalance, useWriteContract, useConnect, useDisconnect, type Connector } from 'wagmi'
+import { useAccount, useBalance, useConnect, useDisconnect, type Connector } from 'wagmi'
 import { WalletState, Network } from '../types'
 import { networks } from '../config/wagmi'
 
@@ -7,7 +7,7 @@ import { networks } from '../config/wagmi'
 interface WalletContextType {
   walletState: WalletState
   connectWallet: (connector: Connector) => Promise<void>
-  disconnectWallet: () => void
+  disconnectWallet: () => Promise<void>
   switchNetwork: (chainId: number) => Promise<void>
   currentNetwork: Network | null
   availableNetworks: Network[]
@@ -23,7 +23,6 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   })
 
   const { address, isConnected, chainId } = useAccount()
-  const { writeContract } = useWriteContract()
   const { connect, connectors } = useConnect()
   const { disconnect } = useDisconnect()
   const { data: balanceData } = useBalance({
@@ -46,11 +45,23 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }
 
   // 断开钱包连接
-  const disconnectWallet = () => {
-    disconnect()
-    setWalletState({
-      isConnected: false,
-    })
+  const disconnectWallet = async () => {
+    try {
+      // 调用wagmi的disconnect函数
+      await disconnect()
+      
+      // 更新本地状态
+      setWalletState({
+        isConnected: false,
+      })
+    } catch (error) {
+      console.error('断开钱包连接失败:', error)
+      // 即使断开失败，也更新本地状态
+      setWalletState({
+        isConnected: false,
+      })
+
+    }
   }
 
   // 切换网络
@@ -93,14 +104,12 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   // 监听网络变化
   useEffect(() => {
     if (typeof window !== 'undefined' && window.ethereum) {
-      const handleChainChanged = (chainId: string) => {
-        console.log('网络已切换:', chainId)
-        // Wagmi会自动处理网络变化，这里只是记录
+      const handleChainChanged = () => {
+        // Wagmi会自动处理网络变化
       }
 
-      const handleAccountsChanged = (accounts: string[]) => {
-        console.log('账户已切换:', accounts)
-        // Wagmi会自动处理账户变化，这里只是记录
+      const handleAccountsChanged = () => {
+        // Wagmi会自动处理账户变化
       }
 
       window.ethereum.on('chainChanged', handleChainChanged)
