@@ -3,7 +3,7 @@ import { Button } from './ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
 import { Alert, AlertDescription } from './ui/alert'
 import { Wallet, Smartphone, Monitor, Link as LinkIcon } from 'lucide-react'
-import { useConnect, useDisconnect } from 'wagmi'
+import { useConnect } from 'wagmi'
 import { useWallet } from '../hooks/useWallet'
 
 interface WalletConnectProps {
