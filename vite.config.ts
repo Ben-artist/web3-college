@@ -4,14 +4,24 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), {
+    name: "copy-headers",
+    writeBundle() {
+      try {
+        const fs = require('fs')
+        fs.copyFileSync('_headers', 'dist/_headers')
+      } catch (e) {
+        console.log('_headers file not found, skipping...')
+      }
+    }
+  }],
   server: {
     port: 3000,
     open: true
   },
   build: {
     outDir: 'dist',
-    sourcemap: false,
+    sourcemap: false, // 关闭sourcemap以减少文件大小
     rollupOptions: {
       output: {
         manualChunks: {
@@ -26,6 +36,5 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // 移除 base: './' 或者改为 base: '/'
-  base: '/'
+  base: './', // 使用相对路径
 })
