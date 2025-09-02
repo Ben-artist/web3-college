@@ -1,50 +1,53 @@
-# Cloudflare Pages headers configuration
-# 确保JavaScript文件有正确的MIME类型
-
-/assets/*
-  Content-Type: application/javascript
-  Cache-Control: public, max-age=31536000
+/*
+  Content-Type: text/html; charset=UTF-8
 
 /*.js
-  Content-Type: application/javascript
-  Cache-Control: public, max-age=31536000
+  Content-Type: application/javascript; charset=UTF-8
 
 /*.mjs
-  Content-Type: application/javascript
-  Cache-Control: public, max-age=31536000
+  Content-Type: application/javascript; charset=UTF-8
+
+/*.ts
+  Content-Type: application/javascript; charset=UTF-8
+
+/*.tsx
+  Content-Type: application/javascript; charset=UTF-8
+
+/*.jsx
+  Content-Type: application/javascript; charset=UTF-8
 
 /*.css
-  Content-Type: text/css
-  Cache-Control: public, max-age=31536000
+  Content-Type: text/css; charset=UTF-8
 
-/*.html
-  Content-Type: text/html
-  Cache-Control: public, max-age=0
+/*.woff
+  Content-Type: font/woff
 
-/*.json
-  Content-Type: application/json
-  Cache-Control: public, max-age=31536000
+/*.woff2
+  Content-Type: font/woff2
+
+/*.ttf
+  Content-Type: font/ttf
+
+/*.otf
+  Content-Type: font/otf
 
 /*.png
   Content-Type: image/png
-  Cache-Control: public, max-age=31536000
 
 /*.jpg
   Content-Type: image/jpeg
-  Cache-Control: public, max-age=31536000
 
 /*.jpeg
   Content-Type: image/jpeg
-  Cache-Control: public, max-age=31536000
 
 /*.gif
   Content-Type: image/gif
-  Cache-Control: public, max-age=31536000
 
 /*.svg
   Content-Type: image/svg+xml
-  Cache-Control: public, max-age=31536000
+
+/*.webp
+  Content-Type: image/webp
 
 /*.ico
   Content-Type: image/x-icon
-  Cache-Control: public, max-age=31536000

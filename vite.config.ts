@@ -11,9 +11,12 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: false, // 关闭sourcemap以减少文件大小
+    sourcemap: false,
     rollupOptions: {
       output: {
+        entryFileNames: '[name]-[hash].js',    // 添加这行
+        chunkFileNames: '[name]-[hash].js',    // 添加这行
+        assetFileNames: '[name]-[hash].[ext]', // 添加这行
         manualChunks: {
           vendor: ['react', 'react-dom'],
           wagmi: ['wagmi', 'viem'],
@@ -26,5 +29,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: './', // 使用相对路径
+  // 移除 base: './' 或者改为 base: '/'
+  base: '/'
 })
