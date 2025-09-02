@@ -1,0 +1,10 @@
+[[rules]]
+glob = "**/*.tsx"
+type = "compileTypescript" # 或者其他您想要的规则，但设置MIME类型如下面所示更直接
+
+# 或者更直接地，使用 `mime_type` 规则：
+[[rules]]
+glob = "**/*.tsx"
+[rules.headers]
+"Content-Type" = "application/typescript; charset=utf-8"
+# 也可以尝试 "text/typescript" 或 "application/javascript; charset=utf-8"

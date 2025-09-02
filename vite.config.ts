@@ -14,9 +14,6 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
-        entryFileNames: '[name]-[hash].js',    // 添加这行
-        chunkFileNames: '[name]-[hash].js',    // 添加这行
-        assetFileNames: '[name]-[hash].[ext]', // 添加这行
         manualChunks: {
           vendor: ['react', 'react-dom'],
           wagmi: ['wagmi', 'viem'],
