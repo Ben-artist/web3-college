@@ -38,7 +38,7 @@ import { Input } from "../components/ui/input";
 import { useToast } from "../hooks/use-toast";
 import { useWallet } from "../hooks/useWallet";
 import type { Course } from "../types";
-
+const { toast } = useToast();
 const StudentPage: React.FC = () => {
 	const { walletState, refreshBalance } = useWallet();
 	const [courses, setCourses] = useState<Course[]>([]);
@@ -105,7 +105,7 @@ const StudentPage: React.FC = () => {
 		}
 	}, [isConfirmedApprove, hashApproveCourse, toast]);
 
-	const { toast } = useToast();
+
 	const navigate = useNavigate();
 
 	// 加载课程列表的函数
@@ -140,7 +140,7 @@ const StudentPage: React.FC = () => {
 
 	useEffect(() => {
 		loadCourses();
-	}, [loadCourses]);
+	}, []);
 
 	// 代币交换处理函数
 	const handleTokenExchange = () => {
@@ -290,7 +290,7 @@ const StudentPage: React.FC = () => {
 		if (isConfirmedBuy && hashBuyCourse) {
 			executeWeb2Operation();
 		}
-	}, [isConfirmedBuy, hashBuyCourse, executeWeb2Operation]);
+	}, [isConfirmedBuy, hashBuyCourse]);
 
 	return (
 		<div className="space-y-8 mt-8">

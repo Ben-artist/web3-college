@@ -214,7 +214,6 @@ const CreateCoursePage: React.FC = () => {
 									课程标题 *
 								</label>
 								<Input
-									id="title"
 									value={courseData.title}
 									onChange={(e) => handleInputChange("title", e.target.value)}
 									placeholder="输入课程标题"
@@ -231,7 +230,6 @@ const CreateCoursePage: React.FC = () => {
 									课程描述
 								</label>
 								<Textarea
-									id="description"
 									value={courseData.description}
 									onChange={(e) =>
 										handleInputChange("description", e.target.value)

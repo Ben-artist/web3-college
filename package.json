@@ -8,7 +8,8 @@
     "preview": "webpack serve --mode production",
     "lint": "biome lint src/**/*.{ts,tsx}",
     "test": "jest tests/unit --collectCoverage --reporters default jest-stare",
-    "check": "biome check --write src/**/*.{ts,tsx}"
+    "check": "biome check --write src/**/*.{ts,tsx}",
+    "prepare": "husky"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.0.4",
