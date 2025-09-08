@@ -13,7 +13,7 @@ function App() {
     <WalletProvider>
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto">
           <Routes>
             <Route path="/" element={<StudentPage />} />
             <Route path="/student" element={<StudentPage />} />

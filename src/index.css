@@ -1,3 +1,5 @@
+@import './styles/cards.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -103,11 +105,11 @@
 
 /* 课程卡片特殊样式 */
 .course-card {
-  @apply relative bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-indigo-300 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1;
+  @apply relative bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-indigo-100 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2;
 }
 
 .course-card.purchased {
-  @apply from-green-50 to-emerald-50 border-green-400;
+  @apply from-green-50 to-emerald-50 border-green-200;
 }
 
 /* 备选颜色方案 - 取消注释并注释掉上面的样式即可使用 */
@@ -140,5 +142,3 @@
 }
 */
 
-/* 导入卡片样式 */
-@import './styles/cards.css';

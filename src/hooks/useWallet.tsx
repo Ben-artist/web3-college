@@ -1,16 +1,17 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { useAccount, useBalance, useConnect, useDisconnect, type Connector } from 'wagmi'
-import { WalletState, Network } from '../types'
-import { networks } from '../config/wagmi'
+import { useAccount, useBalance, useConnect, useDisconnect, useSignMessage, type Connector } from 'wagmi'
+import { formatEther } from 'viem'
+import { WalletState, UsernameVerificationResponse } from '../types'
+import { FETCH_URL } from '@/lib/constant'
 
 // 钱包上下文
 interface WalletContextType {
   walletState: WalletState
   connectWallet: (connector: Connector) => Promise<void>
   disconnectWallet: () => Promise<void>
-  switchNetwork: (chainId: number) => Promise<void>
-  currentNetwork: Network | null
-  availableNetworks: Network[]
+  updateUsername: (username: string) => void
+  updateUsernameWithSignature: (username: string) => Promise<UsernameVerificationResponse>
+  refreshBalance: () => void
   connectors: readonly Connector[]
 }
 
@@ -25,20 +26,15 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { address, isConnected, chainId } = useAccount()
   const { connect, connectors } = useConnect()
   const { disconnect } = useDisconnect()
-  const { data: balanceData } = useBalance({
+  const { signMessageAsync } = useSignMessage()
+  const { data: balanceData, refetch: refetchBalance } = useBalance({
     address,
   })
-
-  // 获取可用网络列表
-  const availableNetworks = Object.values(networks)
-  
-  // 获取当前网络信息
-  const currentNetwork = availableNetworks.find(network => network.id === chainId) || null
 
   // 连接钱包
   const connectWallet = async (connector: any) => {
     try {
-      await connect({ connector })
+      connect({ connector })
     } catch (error) {
       console.error('连接钱包失败:', error)
     }
@@ -47,52 +43,102 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   // 断开钱包连接
   const disconnectWallet = async () => {
     try {
-      // 调用wagmi的disconnect函数
-      await disconnect()
-      
-      // 更新本地状态
+      disconnect()
       setWalletState({
         isConnected: false,
       })
     } catch (error) {
       console.error('断开钱包连接失败:', error)
-      // 即使断开失败，也更新本地状态
       setWalletState({
         isConnected: false,
       })
-
     }
   }
 
-  // 切换网络
-  const handleSwitchNetwork = async (chainId: number) => {
-    try {
-      if (typeof window !== 'undefined' && window.ethereum) {
-        // 尝试切换网络
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${chainId.toString(16)}` }],
-        })
-        
-        // 等待一下让钱包完成切换
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        // 触发Wagmi重新检测网络
-        window.ethereum.request({ method: 'eth_chainId' })
+  // 更新用户名
+  const updateUsername = (username: string) => {
+    if (walletState.isConnected) {
+      setWalletState(prev => ({
+        ...prev,
+        username: username.trim()
+      }))
+      // 保存到localStorage
+      localStorage.setItem(`username_${walletState.address}`, username.trim())
+    }
+  }
+
+  // 使用签名验证用户名
+  const updateUsernameWithSignature = async (username: string): Promise<UsernameVerificationResponse> => {
+    if (!walletState.isConnected || !address) {
+      return {
+        success: false,
+        message: '钱包未连接'
       }
+    }
+
+    try {
+      // 创建要签名的消息
+      const message = `Web3大学用户名验证\n地址: ${address}\n用户名: ${username}\n时间戳: ${Date.now()}`
+
+      // 请求用户签名
+      const signature = await signMessageAsync({
+        message: message
+      })
+
+      // 发送到后端验证
+      const response = await fetch(`${FETCH_URL}/api/updateUsername`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          address,
+          message,
+          signature,
+          newName: username.trim()
+        })
+      })
+
+      const result: UsernameVerificationResponse = await response.json()
+
+      if (result.success) {
+        // 验证成功，更新本地状态
+        setWalletState(prev => ({
+          ...prev,
+          username: username.trim(),
+          isUsernameVerified: true
+        }))
+        // 保存到localStorage
+        localStorage.setItem(`username_${address}`, username.trim())
+        localStorage.setItem(`username_verified_${address}`, 'true')
+      }
+
+      return result
     } catch (error) {
-      console.error('切换网络失败:', error)
+      console.error('签名验证失败:', error)
+      return {
+        success: false,
+        message: '签名验证失败，请重试'
+      }
     }
   }
 
   // 监听钱包状态变化
   useEffect(() => {
     if (isConnected && address && chainId) {
+      // 从localStorage加载用户名和验证状态
+      const savedUsername = localStorage.getItem(`username_${address}`)
+
+      // 如果没有保存的用户名，使用地址作为默认用户名
+      const defaultUsername = savedUsername || address
+
       setWalletState({
         isConnected: true,
         address,
         chainId,
-        balance: balanceData?.formatted || '0',
+        balance: formatEther(balanceData?.value || BigInt(0)),
+        tokenSymbol: balanceData?.symbol || 'ETH',
+        username: defaultUsername,
       })
     } else {
       setWalletState({
@@ -101,34 +147,18 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, [isConnected, address, chainId, balanceData])
 
-  // 监听网络变化
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.ethereum) {
-      const handleChainChanged = () => {
-        // Wagmi会自动处理网络变化
-      }
-
-      const handleAccountsChanged = () => {
-        // Wagmi会自动处理账户变化
-      }
-
-      window.ethereum.on('chainChanged', handleChainChanged)
-      window.ethereum.on('accountsChanged', handleAccountsChanged)
-
-      return () => {
-        window.ethereum.removeListener('chainChanged', handleChainChanged)
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged)
-      }
-    }
-  }, [])
+  // 刷新余额
+  const refreshBalance = () => {
+    refetchBalance()
+  }
 
   const value: WalletContextType = {
     walletState,
     connectWallet,
     disconnectWallet,
-    switchNetwork: handleSwitchNetwork,
-    currentNetwork,
-    availableNetworks,
+    updateUsername,
+    updateUsernameWithSignature,
+    refreshBalance,
     connectors,
   }
 

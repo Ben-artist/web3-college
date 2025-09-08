@@ -3,26 +3,37 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Course } from '../types'
 import { Button } from '../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import { Badge } from '../components/ui/badge'
 import { Alert, AlertDescription } from '../components/ui/alert'
-import { useToast } from '../hooks/use-toast'
-import { ArrowLeft, BookOpen, Users, Calendar, ExternalLink, Image as ImageIcon } from 'lucide-react'
-import { WorkersAPIService, API_CONFIG } from '../services/api'
-import MarkdownRenderer from '../components/MarkdownRenderer'
+import { ArrowLeft, BookOpen, Users, Calendar } from 'lucide-react'
+import { MarkdownRenderer } from '../components/MarkdownRenderer'
+import { useReadContract } from 'wagmi'
+import { COURSE_MANAGER_ADDRESS } from '@/lib/constant'
+import CourseManager from '../assets/abis/CourseManager.json'
 import { useWallet } from '../hooks/useWallet'
-import COURSE_MANAGER_ABI_DATA from '../assets/abis/CourseManager.json'
-
-// CourseManager合约ABI
-const COURSE_MANAGER_ABI = COURSE_MANAGER_ABI_DATA.abi
+import { FETCH_URL } from '@/lib/constant'
 
 const CourseDetailPage: React.FC = () => {
+  const { walletState } = useWallet()
   const { courseId } = useParams<{ courseId: string }>()
   const navigate = useNavigate()
-  const { toast } = useToast()
-  const { walletState } = useWallet()
   const [course, setCourse] = useState<Course | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isBuyerInCourse, setIsBuyerInCourse] = useState(false)
+
+  // 检查用户是否购买了课程
+  const { data: buyerStatus } = useReadContract({
+    abi: CourseManager.abi,
+    address: COURSE_MANAGER_ADDRESS,
+    functionName: "isBuyerInCourse",
+    args: [courseId, walletState.address],
+  })
+
+  useEffect(() => {
+    if (buyerStatus !== undefined) {
+      setIsBuyerInCourse(buyerStatus as boolean)
+    }
+  }, [buyerStatus])
 
 
 
@@ -35,39 +46,19 @@ const CourseDetailPage: React.FC = () => {
       setError(null)
 
       try {
-        // 从所有课程中查找指定课程
-        const result = await WorkersAPIService.getAllCourses()
-        const allCourses = result.courses || []
-        
-        const foundCourse = allCourses.find((c: any) => c.courseId === courseId)
-        
-        if (foundCourse) {
-          // 通过buyer数组是否包含当前地址来判断是否已购买
-          // 使用toLowerCase()确保大小写不敏感的比较
-          const isPurchased = foundCourse.buyer && foundCourse.buyer.some((buyerAddress: string) => 
-            buyerAddress.toLowerCase() === walletState.address?.toLowerCase()
-          )
-          
-          // 转换为Course格式
-          const formattedCourse: Course = {
-            id: foundCourse.courseId,
-            title: foundCourse.title,
-            content: foundCourse.content,
-            price: foundCourse.cost,
-            description: foundCourse.description || '',
-            cover: foundCourse.cover || '',
-            buyer: foundCourse.buyer || [],
-            txHash: foundCourse.txHash || '',
-            author: '未知作者',
-            authorAddress: foundCourse.address || '',
-            isPurchased: isPurchased, // 通过buyer数组判断购买状态
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
+        // 从API获取课程详情
+        const response = await fetch(`${FETCH_URL}/api/getAllCourses`)
+        const data = await response.json()
+
+        if (data.code === 200 && data.data) {
+          const foundCourse = data.data.find((c: Course) => c.courseId === courseId)
+          if (foundCourse) {
+            setCourse(foundCourse)
+          } else {
+            setError('课程不存在')
           }
-          
-          setCourse(formattedCourse)
         } else {
-          setError('课程不存在')
+          setError('加载课程详情失败，请重试')
         }
       } catch (error) {
         console.error('加载课程详情失败:', error)
@@ -93,14 +84,14 @@ const CourseDetailPage: React.FC = () => {
 
   if (error || !course) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto mt-4">
         <Alert variant="destructive">
           <AlertDescription>
             {error || '课程不存在'}
           </AlertDescription>
         </Alert>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => navigate(-1)}
           className="mt-4"
         >
@@ -111,11 +102,46 @@ const CourseDetailPage: React.FC = () => {
     )
   }
 
+  // 权限检查：如果用户没有购买课程，显示无权访问
+  if (walletState.address && !isBuyerInCourse) {
+    return (
+      <div className="container mx-auto mt-4">
+        <div className="text-center py-12">
+          <div className="mb-6">
+            <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <BookOpen className="w-12 h-12 text-red-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">无权访问</h2>
+            <p className="text-gray-600 mb-6">
+              您需要先购买此课程才能查看详细内容
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <Button
+              onClick={() => navigate('/student')}
+              className="mr-4"
+            >
+              返回课程列表
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              返回上一页
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto mt-4">
       {/* 返回按钮 */}
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         onClick={() => navigate(-1)}
         className="mb-6"
       >
@@ -130,8 +156,8 @@ const CourseDetailPage: React.FC = () => {
             {/* 课程封面 */}
             {course.cover && (
               <div className="flex-shrink-0 overflow-hidden rounded-lg border border-gray-200">
-                <img 
-                  src={course.cover} 
+                <img
+                  src={course.cover}
                   alt={course.title}
                   className="w-32 h-32 object-cover object-center"
                   onError={(e) => {
@@ -140,35 +166,35 @@ const CourseDetailPage: React.FC = () => {
                 />
               </div>
             )}
-            
+
             {/* 课程基本信息 */}
             <div className="flex-1 min-w-0">
               <CardTitle className="text-2xl mb-2">{course.title}</CardTitle>
-              
+
               {/* 课程ID */}
               <div className="text-sm text-muted-foreground mb-3">
-                课程ID: {course.id}
+                课程ID: {course.courseId}
               </div>
-              
+
               {/* 课程描述 */}
               {course.description && (
                 <p className="text-muted-foreground mb-4">
                   {course.description}
                 </p>
               )}
-              
+
               {/* 课程元信息 */}
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center space-x-1">
                   <BookOpen className="h-4 w-4" />
                   <span>价格: {course.price} TSK</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-1">
                   <Users className="h-4 w-4" />
-                  <span>购买者: {course.buyer.length} 人</span>
+                  <span>购买者: {course.buyers?.length || 0} 人</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-1">
                   <Calendar className="h-4 w-4" />
                   <span>创建时间: {new Date(course.createdAt).toLocaleDateString()}</span>
@@ -186,23 +212,20 @@ const CourseDetailPage: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="prose max-w-none">
-            <MarkdownRenderer 
-              content={course.content} 
-              className="text-base leading-relaxed"
-            />
+            <MarkdownRenderer content={course.content} />
           </div>
         </CardContent>
       </Card>
 
       {/* 购买者列表 */}
-      {course.buyer && course.buyer.length > 0 && (
+      {course.buyers && course.buyers.length > 0 && (
         <Card className="mt-6">
           <CardHeader>
             <CardTitle className="text-xl">购买者列表</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {course.buyer.map((buyer, index) => (
+              {course.buyers.map((buyer: string, index: number) => (
                 <div key={index} className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
                   <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                     <span className="text-sm font-medium text-primary">
@@ -224,28 +247,6 @@ const CourseDetailPage: React.FC = () => {
         </Card>
       )}
 
-      {/* 交易信息 */}
-      {course.txHash && (
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="text-xl">交易信息</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-2">
-              <Badge variant="outline" className="font-mono text-sm">
-                {course.txHash}
-              </Badge>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => window.open(`https://sepolia.etherscan.io/tx/${course.txHash}`, '_blank')}
-              >
-                <ExternalLink className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   )
 }

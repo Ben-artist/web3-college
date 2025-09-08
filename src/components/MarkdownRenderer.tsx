@@ -1,36 +1,37 @@
-import React from 'react';
-import MarkdownIt from 'markdown-it';
+import React, { useEffect, useRef } from 'react'
+import MarkdownIt from 'markdown-it'
 
 interface MarkdownRendererProps {
-  content: string;
-  className?: string;
+  content: string
+  className?: string
 }
 
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-  breaks: true,
-});
+export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, className = '' }) => {
+  const containerRef = useRef<HTMLDivElement>(null)
 
-const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, className = '' }) => {
-  const renderMarkdown = () => {
-    if (!content) return '';
-    
-    try {
-      return md.render(content);
-    } catch (error) {
-      console.error('Markdown渲染失败:', error);
-      return content; // 如果渲染失败，返回原始内容
-    }
-  };
+  useEffect(() => {
+    if (!containerRef.current || !content) return
+
+    // 初始化 markdown-it
+    const md = new MarkdownIt({
+      html: true,
+      linkify: true,
+      typographer: true,
+    })
+
+    // 渲染 Markdown 为 HTML
+    const html = md.render(content)
+    containerRef.current.innerHTML = html
+  }, [content])
 
   return (
     <div 
-      className={`prose prose-sm max-w-none ${className}`}
-      dangerouslySetInnerHTML={{ __html: renderMarkdown() }}
+      ref={containerRef} 
+      className={`prose prose-lg max-w-none ${className}`}
+      style={{
+        // 自定义样式
+        lineHeight: '1.6',
+      }}
     />
-  );
-};
-
-export default MarkdownRenderer;
+  )
+}

@@ -1,18 +1,15 @@
 // 课程类型定义
 export interface Course {
-  id: string
+  courseId: string
+  authorName: string
+  authorAddress: string
   title: string
   content: string
   price: number
   description?: string
   cover?: string
-  buyer: string[]
-  txHash?: string
-  author: string
-  authorAddress: string
-  isPurchased: boolean
+  buyers: string[]
   createdAt: number
-  updatedAt: number
 }
 
 // 用户类型定义
@@ -41,6 +38,22 @@ export interface WalletState {
   ensName?: string
   chainId?: number
   balance?: string
+  tokenSymbol?: string
+  username?: string
+}
+
+// 签名验证请求
+export interface SignatureRequest {
+  address: string
+  message: string
+  signature: string
+}
+
+// 用户名验证响应
+export interface UsernameVerificationResponse {
+  success: boolean
+  username?: string
+  message?: string
 }
 
 // 代币兑换类型

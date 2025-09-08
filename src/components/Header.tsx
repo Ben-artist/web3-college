@@ -4,14 +4,12 @@ import { useWallet } from '../hooks/useWallet'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
 import { Avatar, AvatarFallback } from './ui/avatar'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
-import { Wallet, Network, BookOpen, User } from 'lucide-react'
-
+import { Wallet, BookOpen, User } from 'lucide-react'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { walletState, currentNetwork, connectWallet, disconnectWallet, connectors, availableNetworks, switchNetwork } = useWallet()
+  const { walletState, connectWallet, disconnectWallet, connectors } = useWallet()
 
   // 连接钱包
   const handleConnectWallet = async (connector: any) => {
@@ -24,15 +22,6 @@ const Header: React.FC = () => {
 
   const handleDisconnectWallet = async () => {
     await disconnectWallet()
-  }
-
-  // 切换网络
-  const handleNetworkChange = async (chainId: number) => {
-    try {
-      await switchNetwork(chainId)
-    } catch (error) {
-      console.error('切换网络失败:', error)
-    }
   }
 
   // 格式化地址显示
@@ -55,7 +44,7 @@ const Header: React.FC = () => {
         {/* 导航按钮 */}
         <nav className="flex items-center space-x-4 ml-8">
           <Button
-            variant={location.pathname === '/student' ? 'default' : 'ghost'}
+            variant={location.pathname === '/student' || location.pathname === '/' ? 'default' : 'ghost'}
             onClick={() => navigate('/student')}
             className="flex items-center space-x-2"
           >
@@ -73,30 +62,13 @@ const Header: React.FC = () => {
         </nav>
 
         <div className="ml-auto flex items-center space-x-4">
-
-
-          {/* 网络选择器 */}
-          <div className="flex items-center space-x-2">
-            <Network className="h-4 w-4 text-muted-foreground" />
-            <Select value={currentNetwork?.id?.toString() || ''} onValueChange={(value) => handleNetworkChange(parseInt(value))}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="选择网络" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableNetworks.map((network) => (
-                  <SelectItem key={network.id} value={network.id.toString()}>
-                    {network.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
           {/* 钱包信息 */}
           {walletState.isConnected ? (
             <div className="flex items-center space-x-3">
               {/* 余额显示 */}
               <Badge variant="outline" className="px-3 py-1">
-                {walletState.balance || '0'} ETH
+                {/* 显示余额和币种，如果walletState中有tokenSymbol则显示，否则默认ETH */}
+                {walletState.balance} {walletState.tokenSymbol || 'ETH'}
               </Badge>
 
               {/* 钱包地址 */}
@@ -110,7 +82,7 @@ const Header: React.FC = () => {
                   </AvatarFallback>
                 </Avatar>
                 <span className="hidden sm:inline">
-                  {walletState.ensName || formatAddress(walletState.address || '')}
+                  {formatAddress(walletState.address || '')}
                 </span>
               </Button>
 
@@ -122,7 +94,6 @@ const Header: React.FC = () => {
                 <Wallet className="h-4 w-4" />
                 <span>断开连接</span>
               </Button>
-
             </div>
           ) : (
             <Button
