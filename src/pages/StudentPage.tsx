@@ -7,7 +7,7 @@ import {
 	ShoppingCart,
 } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { parseEther } from "viem";
 import {
@@ -38,9 +38,12 @@ import { Input } from "../components/ui/input";
 import { useToast } from "../hooks/use-toast";
 import { useWallet } from "../hooks/useWallet";
 import type { Course } from "../types";
-const { toast } = useToast();
+
 const StudentPage: React.FC = () => {
+	const { toast } = useToast();
 	const { walletState, refreshBalance } = useWallet();
+	const ethAmountId = useId();
+	const tskAmountId = useId();
 	const [courses, setCourses] = useState<Course[]>([]);
 	const [isLoadingCourses, setIsLoadingCourses] = useState(false);
 	const { writeContract: writeApproveCourse, data: hashApproveCourse } =
@@ -109,7 +112,7 @@ const StudentPage: React.FC = () => {
 	const navigate = useNavigate();
 
 	// 加载课程列表的函数
-	const loadCourses = async () => {
+	const loadCourses = useCallback(async () => {
 		setIsLoadingCourses(true);
 		try {
 			// 模拟课程数据
@@ -136,11 +139,11 @@ const StudentPage: React.FC = () => {
 		} finally {
 			setIsLoadingCourses(false);
 		}
-	};
+	}, [toast]);
 
 	useEffect(() => {
 		loadCourses();
-	}, []);
+	}, [loadCourses]);
 
 	// 代币交换处理函数
 	const handleTokenExchange = () => {
@@ -244,9 +247,18 @@ const StudentPage: React.FC = () => {
 		price: number,
 		authorAddress: string,
 	) => {
+		if (!walletState.address) {
+			toast({
+				title: "错误",
+				description: "请先连接钱包",
+				variant: "destructive",
+			});
+			return;
+		}
+		
 		setBuyCourseData({
 			courseId,
-			address: walletState.address!,
+			address: walletState.address,
 			authorAddress,
 		});
 		writeBuyCourse({
@@ -257,7 +269,7 @@ const StudentPage: React.FC = () => {
 		});
 	};
 
-	const executeWeb2Operation = () => {
+	const executeWeb2Operation = useCallback(() => {
 		fetch(`${FETCH_URL}/api/buyCourse`, {
 			method: "POST",
 			headers: {
@@ -284,13 +296,13 @@ const StudentPage: React.FC = () => {
 					variant: "destructive",
 				});
 			});
-	};
+	}, [buyCourseData, toast, loadCourses]);
 
 	useEffect(() => {
 		if (isConfirmedBuy && hashBuyCourse) {
 			executeWeb2Operation();
 		}
-	}, [isConfirmedBuy, hashBuyCourse]);
+	}, [isConfirmedBuy, hashBuyCourse, executeWeb2Operation]);
 
 	return (
 		<div className="space-y-8 mt-8">
@@ -468,10 +480,11 @@ const StudentPage: React.FC = () => {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<div className="space-y-2">
-								<label className="text-sm font-medium text-gray-700">
+								<label htmlFor={ethAmountId} className="text-sm font-medium text-gray-700">
 									输入ETH数量
 								</label>
 								<Input
+									id={ethAmountId}
 									type="number"
 									placeholder="0.0"
 									value={ethAmount}
@@ -527,10 +540,11 @@ const StudentPage: React.FC = () => {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<div className="space-y-2">
-								<label className="text-sm font-medium text-gray-700">
+								<label htmlFor={tskAmountId} className="text-sm font-medium text-gray-700">
 									输入TSK数量
 								</label>
 								<Input
+									id={tskAmountId}
 									type="number"
 									placeholder="0.0"
 									value={tskAmount}

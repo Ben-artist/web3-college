@@ -1,6 +1,6 @@
-import { BookOpen, Eye, Info, Save } from "lucide-react";
+import { BookOpen, Eye, Info, Save, Wand2, Loader2 } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { parseEther } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
@@ -19,11 +19,19 @@ import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { useToast } from "../hooks/use-toast";
 import { useWallet } from "../hooks/useWallet";
-
+import { MastraClient } from '@mastra/client-js';
+const client = new MastraClient({ baseUrl: 'https://white-thundering-airplane-b88adec7-70af-4330-b493-d14059f0eb7c.mastra.cloud' });
+const agent = client.getAgent('textExpandAgent');
+client.getAgents().then(agents => {
+	console.log(agents);
+});
 const CreateCoursePage: React.FC = () => {
 	const { walletState } = useWallet();
 	const { toast } = useToast();
 	const navigate = useNavigate();
+	const coverId = useId();
+	const priceId = useId();
+	const contentId = useId();
 	const {
 		writeContract,
 		data: hash,
@@ -42,9 +50,57 @@ const CreateCoursePage: React.FC = () => {
 		description: "",
 		cover: "",
 	});
+	const [isExpanding, setIsExpanding] = useState(false);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [showPreviewModal, setShowPreviewModal] = useState(false);
+
+	// 执行 Web2 操作（在区块链确认后）
+	const executeWeb2Operation = useCallback(async () => {
+		try {
+			toast({
+				title: "区块链确认成功",
+				description: "正在保存到服务器...",
+			});
+
+			const courseId = Date.now().toString();
+			const response = await fetch(`${FETCH_URL}/api/createCourse`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					courseId,
+					title: courseData.title,
+					content: courseData.content,
+					price: courseData.price,
+					description: courseData.description,
+					cover: courseData.cover,
+					author: walletState.address,
+					authorName: walletState.username || walletState.address,
+				}),
+			});
+
+			if (response.ok) {
+				toast({
+					title: "课程创建成功",
+					description: "课程已成功创建并保存到服务器",
+				});
+				navigate("/author");
+			} else {
+				throw new Error("服务器保存失败");
+			}
+		} catch (error) {
+			console.error("Web2操作失败:", error);
+			toast({
+				title: "保存失败",
+				description: "课程创建成功，但保存到服务器失败",
+				variant: "destructive",
+			});
+		} finally {
+			setIsLoading(false);
+		}
+	}, [courseData, walletState, toast, navigate]);
 
 	// 监听区块链交易状态
 	useEffect(() => {
@@ -52,11 +108,7 @@ const CreateCoursePage: React.FC = () => {
 			// 区块链交易确认成功，现在执行 Web2 操作
 			executeWeb2Operation();
 		}
-	}, [
-		isConfirmed,
-		hash, // 区块链交易确认成功，现在执行 Web2 操作
-		executeWeb2Operation,
-	]);
+	}, [isConfirmed, hash, executeWeb2Operation]);
 
 	// 监听区块链交易错误
 	useEffect(() => {
@@ -76,6 +128,55 @@ const CreateCoursePage: React.FC = () => {
 		setCourseData((prev) => ({ ...prev, [field]: value }));
 	};
 
+	// AI扩写课程内容
+	const handleAIExpand = async () => {
+		if (!courseData.content.trim()) {
+			toast({
+				title: "提示",
+				description: "请先输入课程内容再进行AI扩写",
+				variant: "destructive",
+			});
+			return;
+		}
+
+		setIsExpanding(true);
+		try {
+			const response = await agent.generate({
+				messages: [
+					{
+						role: 'user',
+						content: `请将以下技术主题扩写为完整的技术博客内容：
+						原始内容: ${courseData.content}
+						上下文: ${courseData.title}`
+					}
+				]
+			});
+			console.log(response);
+
+			// if (response.success && response.data) {
+			// 	setCourseData(prev => ({
+			// 		...prev,
+			// 		content: response.data.expandedText || response.data
+			// 	}));
+			// 	toast({
+			// 		title: "AI扩写成功",
+			// 		description: "课程内容已使用AI进行扩写",
+			// 	});
+			// } else {
+			// 	throw new Error(response.error || "AI扩写失败");
+			// }
+		} catch (error) {
+			console.error("AI扩写失败:", error);
+			toast({
+				title: "AI扩写失败",
+				description: error instanceof Error ? error.message : "请稍后重试",
+				variant: "destructive",
+			});
+		} finally {
+			setIsExpanding(false);
+		}
+	};
+
 	// 打开预览弹窗
 	const handleOpenPreview = () => {
 		setShowPreviewModal(true);
@@ -86,48 +187,6 @@ const CreateCoursePage: React.FC = () => {
 		setShowPreviewModal(false);
 	};
 
-	// 执行 Web2 操作（在区块链确认后）
-	const executeWeb2Operation = async () => {
-		try {
-			toast({
-				title: "区块链确认成功",
-				description: "正在保存到服务器...",
-			});
-
-			// 调用 Web2 API
-			const response = await fetch(`${FETCH_URL}/api/createCourse`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					...courseData,
-					authorAddress: walletState.address,
-					// 使用已经设置好的courseId，不再重新生成
-				}),
-			});
-
-			const data = await response.json();
-
-			if (data.code === 200) {
-				toast({
-					title: "课程创建成功！",
-					description: `区块链交易: ${hash?.slice(0, 10)}...`,
-				});
-				navigate("/author");
-			} else {
-				throw new Error(data.message || "服务器保存失败");
-			}
-		} catch (error) {
-			toast({
-				title: "服务器保存失败",
-				description: error as string,
-				variant: "destructive",
-			});
-		} finally {
-			setIsLoading(false);
-		}
-	};
 
 	// 创建课程 - 先写入区块链，确认后再执行 Web2 操作
 	const handleCreateCourse = async () => {
@@ -244,13 +303,13 @@ const CreateCoursePage: React.FC = () => {
 
 							{/* 课程封面 */}
 							<div className="space-y-2">
-								<label htmlFor="cover" className="text-sm font-medium">
+								<label htmlFor={coverId} className="text-sm font-medium">
 									课程封面
 								</label>
 								<div className="space-y-3">
 									{/* 封面图URL输入 */}
 									<Input
-										id="cover"
+										id={coverId}
 										value={courseData.cover}
 										onChange={(e) => handleInputChange("cover", e.target.value)}
 										placeholder="封面图片URL（可选）"
@@ -282,11 +341,11 @@ const CreateCoursePage: React.FC = () => {
 
 							{/* 课程价格 */}
 							<div className="space-y-2">
-								<label htmlFor="price" className="text-sm font-medium">
+								<label htmlFor={priceId} className="text-sm font-medium">
 									课程价格 *
 								</label>
 								<Input
-									id="price"
+									id={priceId}
 									type="number"
 									value={courseData.price}
 									onChange={(e) => handleInputChange("price", e.target.value)}
@@ -307,18 +366,37 @@ const CreateCoursePage: React.FC = () => {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<div className="space-y-2">
-								<label htmlFor="content" className="text-sm font-medium">
-									课程内容
-								</label>
+								<div className="flex items-center justify-between">
+									<label htmlFor={contentId} className="text-sm font-medium">
+										课程内容
+									</label>
+									<div className="flex items-center space-x-2">
+										<Button
+											type="button"
+											variant="outline"
+											size="sm"
+											onClick={handleAIExpand}
+											disabled={isExpanding || !courseData.content.trim()}
+											className="flex items-center space-x-1"
+										>
+											{isExpanding ? (
+												<Loader2 className="h-4 w-4 animate-spin" />
+											) : (
+												<Wand2 className="h-4 w-4" />
+											)}
+											<span>{isExpanding ? "AI扩写中..." : "AI扩写"}</span>
+										</Button>
+									</div>
+								</div>
 								<Textarea
-									id="content"
+									id={contentId}
 									value={courseData.content}
 									onChange={(e) => handleInputChange("content", e.target.value)}
 									placeholder="输入课程内容（支持Markdown格式）&#10;&#10;示例：&#10;# 课程标题&#10;&#10;## 第一章：基础知识&#10;&#10;- 列表项1&#10;- 列表项2&#10;&#10;**粗体文本** *斜体文本*&#10;&#10;[链接文本](https://example.com)"
 									rows={10}
 								/>
 								<p className="text-xs text-muted-foreground">
-									支持Markdown格式，包括标题、列表、链接等
+									支持Markdown格式，包括标题、列表、链接等。点击"AI扩写"按钮可以使用AI自动扩写内容。
 								</p>
 							</div>
 						</CardContent>

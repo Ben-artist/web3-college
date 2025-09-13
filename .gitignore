@@ -6,3 +6,4 @@ workers/.env*
 workers/.DS_Store
 workers/.wrangler/
 dist/
+cypress/e2e/

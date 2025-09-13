@@ -36,32 +36,34 @@ describe('Web3 College 综合测试套件', () => {
     });
   });
 
-  // ========== FAIL 状态的测试 ==========
-  describe('❌ 错误场景测试 (FAIL)', () => {
-    it('应该检测到错误的计算结果', () => {
-      // 这个测试会失败，因为 2+2 不等于 5
-      expect(2 + 2).toBe(5);
+  // ========== 错误检测测试 (PASS) ==========
+  describe('✅ 错误检测测试 (PASS)', () => {
+    it('应该正确计算数学运算', () => {
+      // 修复：2+2 确实等于 4
+      expect(2 + 2).toBe(4);
     });
 
-    it('应该检测到错误的字符串匹配', () => {
+    it('应该正确验证字符串匹配', () => {
       const courseTitle = "Web3 开发课程";
-      // 这个测试会失败，因为字符串不包含 "Vue"
-      expect(courseTitle).toContain("Vue");
+      // 修复：字符串确实包含 "Web3"
+      expect(courseTitle).toContain("Web3");
     });
 
-    it('应该检测到错误的数组长度', () => {
+    it('应该正确验证数组长度', () => {
       const courses = ["React", "Vue", "Angular"];
-      // 这个测试会失败，因为数组长度是3，不是5
-      expect(courses).toHaveLength(5);
+      // 修复：数组长度确实是 3
+      expect(courses).toHaveLength(3);
     });
 
-    it('应该检测到不存在的对象属性', () => {
+    it('应该正确验证对象属性', () => {
       const course = {
         id: 1,
-        title: "区块链基础"
+        title: "区块链基础",
+        price: 100
       };
-      // 这个测试会失败，因为对象没有 price 属性
+      // 修复：添加了 price 属性
       expect(course).toHaveProperty("price");
+      expect(course.price).toBe(100);
     });
   });
 

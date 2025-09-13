@@ -1,8 +1,8 @@
 {
-  "numFailedTestSuites": 1,
-  "numFailedTests": 4,
-  "numPassedTestSuites": 0,
-  "numPassedTests": 15,
+  "numFailedTestSuites": 0,
+  "numFailedTests": 0,
+  "numPassedTestSuites": 1,
+  "numPassedTests": 19,
   "numPendingTestSuites": 0,
   "numPendingTests": 0,
   "numRuntimeErrorTestSuites": 0,
@@ -26,27 +26,27 @@
     "unmatched": 0,
     "updated": 0
   },
-  "startTime": 1757336012842,
+  "startTime": 1757747211205,
   "success": false,
   "testResults": [
     {
       "leaks": false,
-      "numFailingTests": 4,
-      "numPassingTests": 15,
+      "numFailingTests": 0,
+      "numPassingTests": 19,
       "numPendingTests": 0,
       "numTodoTests": 5,
       "openHandles": [],
       "perfStats": {
-        "end": 1757336013070,
-        "loadTestEnvironmentEnd": 1757336012888,
-        "loadTestEnvironmentStart": 1757336012869,
-        "runtime": 181,
-        "setupAfterEnvEnd": 1757336012934,
-        "setupAfterEnvStart": 1757336012932,
-        "setupFilesEnd": 1757336012889,
-        "setupFilesStart": 1757336012889,
+        "end": 1757747211395,
+        "loadTestEnvironmentEnd": 1757747211243,
+        "loadTestEnvironmentStart": 1757747211227,
+        "runtime": 151,
+        "setupAfterEnvEnd": 1757747211283,
+        "setupAfterEnvStart": 1757747211282,
+        "setupFilesEnd": 1757747211244,
+        "setupFilesStart": 1757747211244,
         "slow": false,
-        "start": 1757336012889
+        "start": 1757747211244
       },
       "skipped": false,
       "snapshot": {
@@ -74,7 +74,7 @@
           "location": null,
           "numPassingAsserts": 3,
           "retryReasons": [],
-          "startAt": 1757336012942,
+          "startAt": 1757747211285,
           "status": "passed",
           "title": "应该正确计算数学运算"
         },
@@ -92,7 +92,7 @@
           "location": null,
           "numPassingAsserts": 3,
           "retryReasons": [],
-          "startAt": 1757336012943,
+          "startAt": 1757747211286,
           "status": "passed",
           "title": "应该正确验证字符串操作"
         },
@@ -110,7 +110,7 @@
           "location": null,
           "numPassingAsserts": 3,
           "retryReasons": [],
-          "startAt": 1757336012944,
+          "startAt": 1757747211286,
           "status": "passed",
           "title": "应该正确验证数组操作"
         },
@@ -128,120 +128,81 @@
           "location": null,
           "numPassingAsserts": 4,
           "retryReasons": [],
-          "startAt": 1757336012944,
+          "startAt": 1757747211287,
           "status": "passed",
           "title": "应该正确验证对象属性"
         },
         {
           "ancestorTitles": [
             "Web3 College 综合测试套件",
-            "❌ 错误场景测试 (FAIL)"
-          ],
-          "duration": 1,
-          "failing": false,
-          "failureDetails": [
-            {
-              "matcherResult": {
-                "actual": 4,
-                "expected": 5,
-                "message": "\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m5\u001b[39m\nReceived: \u001b[31m4\u001b[39m",
-                "name": "toBe",
-                "pass": false
-              }
-            }
-          ],
-          "failureMessages": [
-            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m5\u001b[39m\nReceived: \u001b[31m4\u001b[39m\n    at Object.toBe (/Users/tangshuokun/京城一灯/web3-college/tests/unit/test.spec.ts:43:21)\n    at Promise.finally.completed (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1556:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1496:10)\n    at _callCircusTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1006:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:946:3)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:839:13)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at run (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:757:3)\n    at runAndTransformResultsToJestFormat (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1917:21)\n    at jestAdapter (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/runner.js:101:19)\n    at runTestInternal (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-runner@30.1.3/node_modules/jest-runner/build/index.js:275:16)\n    at runTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-runner@30.1.3/node_modules/jest-runner/build/index.js:343:7)"
-          ],
-          "fullName": "Web3 College 综合测试套件 ❌ 错误场景测试 (FAIL) 应该检测到错误的计算结果",
-          "invocations": 1,
-          "location": null,
-          "numPassingAsserts": 0,
-          "retryReasons": [],
-          "startAt": 1757336012944,
-          "status": "failed",
-          "title": "应该检测到错误的计算结果"
-        },
-        {
-          "ancestorTitles": [
-            "Web3 College 综合测试套件",
-            "❌ 错误场景测试 (FAIL)"
+            "✅ 错误检测测试 (PASS)"
           ],
           "duration": 0,
           "failing": false,
-          "failureDetails": [
-            {
-              "matcherResult": {
-                "message": "\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"Vue\"\u001b[39m\nReceived string:    \u001b[31m\"Web3 开发课程\"\u001b[39m",
-                "pass": false
-              }
-            }
-          ],
-          "failureMessages": [
-            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"Vue\"\u001b[39m\nReceived string:    \u001b[31m\"Web3 开发课程\"\u001b[39m\n    at Object.toContain (/Users/tangshuokun/京城一灯/web3-college/tests/unit/test.spec.ts:49:27)\n    at Promise.finally.completed (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1556:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1496:10)\n    at _callCircusTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1006:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:946:3)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:839:13)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at run (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:757:3)\n    at runAndTransformResultsToJestFormat (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1917:21)\n    at jestAdapter (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/runner.js:101:19)\n    at runTestInternal (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-runner@30.1.3/node_modules/jest-runner/build/index.js:275:16)\n    at runTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-runner@30.1.3/node_modules/jest-runner/build/index.js:343:7)"
-          ],
-          "fullName": "Web3 College 综合测试套件 ❌ 错误场景测试 (FAIL) 应该检测到错误的字符串匹配",
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Web3 College 综合测试套件 ✅ 错误检测测试 (PASS) 应该正确计算数学运算",
           "invocations": 1,
           "location": null,
-          "numPassingAsserts": 0,
+          "numPassingAsserts": 1,
           "retryReasons": [],
-          "startAt": 1757336012948,
-          "status": "failed",
-          "title": "应该检测到错误的字符串匹配"
+          "startAt": 1757747211287,
+          "status": "passed",
+          "title": "应该正确计算数学运算"
         },
         {
           "ancestorTitles": [
             "Web3 College 综合测试套件",
-            "❌ 错误场景测试 (FAIL)"
-          ],
-          "duration": 1,
-          "failing": false,
-          "failureDetails": [
-            {
-              "matcherResult": {
-                "message": "\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveLength\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected length: \u001b[32m5\u001b[39m\nReceived length: \u001b[31m3\u001b[39m\nReceived array:  \u001b[31m[\"React\", \"Vue\", \"Angular\"]\u001b[39m",
-                "pass": false
-              }
-            }
-          ],
-          "failureMessages": [
-            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveLength\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected length: \u001b[32m5\u001b[39m\nReceived length: \u001b[31m3\u001b[39m\nReceived array:  \u001b[31m[\"React\", \"Vue\", \"Angular\"]\u001b[39m\n    at Object.toHaveLength (/Users/tangshuokun/京城一灯/web3-college/tests/unit/test.spec.ts:55:23)\n    at Promise.finally.completed (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1556:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1496:10)\n    at _callCircusTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1006:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:946:3)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:839:13)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at run (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:757:3)\n    at runAndTransformResultsToJestFormat (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1917:21)\n    at jestAdapter (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/runner.js:101:19)\n    at runTestInternal (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-runner@30.1.3/node_modules/jest-runner/build/index.js:275:16)\n    at runTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-runner@30.1.3/node_modules/jest-runner/build/index.js:343:7)"
-          ],
-          "fullName": "Web3 College 综合测试套件 ❌ 错误场景测试 (FAIL) 应该检测到错误的数组长度",
-          "invocations": 1,
-          "location": null,
-          "numPassingAsserts": 0,
-          "retryReasons": [],
-          "startAt": 1757336012948,
-          "status": "failed",
-          "title": "应该检测到错误的数组长度"
-        },
-        {
-          "ancestorTitles": [
-            "Web3 College 综合测试套件",
-            "❌ 错误场景测试 (FAIL)"
+            "✅ 错误检测测试 (PASS)"
           ],
           "duration": 0,
           "failing": false,
-          "failureDetails": [
-            {
-              "matcherResult": {
-                "message": "\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m)\u001b[22m\n\nExpected path: \u001b[32m\"price\"\u001b[39m\nReceived path: \u001b[31m[]\u001b[39m\n\nReceived value: \u001b[31m{\"id\": 1, \"title\": \"区块链基础\"}\u001b[39m",
-                "pass": false
-              }
-            }
-          ],
-          "failureMessages": [
-            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m)\u001b[22m\n\nExpected path: \u001b[32m\"price\"\u001b[39m\nReceived path: \u001b[31m[]\u001b[39m\n\nReceived value: \u001b[31m{\"id\": 1, \"title\": \"区块链基础\"}\u001b[39m\n    at Object.toHaveProperty (/Users/tangshuokun/京城一灯/web3-college/tests/unit/test.spec.ts:64:22)\n    at Promise.finally.completed (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1556:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1496:10)\n    at _callCircusTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1006:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:946:3)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:839:13)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at _runTestsForDescribeBlock (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:829:11)\n    at run (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:757:3)\n    at runAndTransformResultsToJestFormat (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/jestAdapterInit.js:1917:21)\n    at jestAdapter (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-circus@30.1.3/node_modules/jest-circus/build/runner.js:101:19)\n    at runTestInternal (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-runner@30.1.3/node_modules/jest-runner/build/index.js:275:16)\n    at runTest (/Users/tangshuokun/京城一灯/web3-college/node_modules/.pnpm/jest-runner@30.1.3/node_modules/jest-runner/build/index.js:343:7)"
-          ],
-          "fullName": "Web3 College 综合测试套件 ❌ 错误场景测试 (FAIL) 应该检测到不存在的对象属性",
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Web3 College 综合测试套件 ✅ 错误检测测试 (PASS) 应该正确验证字符串匹配",
           "invocations": 1,
           "location": null,
-          "numPassingAsserts": 0,
+          "numPassingAsserts": 1,
           "retryReasons": [],
-          "startAt": 1757336012949,
-          "status": "failed",
-          "title": "应该检测到不存在的对象属性"
+          "startAt": 1757747211287,
+          "status": "passed",
+          "title": "应该正确验证字符串匹配"
+        },
+        {
+          "ancestorTitles": [
+            "Web3 College 综合测试套件",
+            "✅ 错误检测测试 (PASS)"
+          ],
+          "duration": 0,
+          "failing": false,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Web3 College 综合测试套件 ✅ 错误检测测试 (PASS) 应该正确验证数组长度",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 1,
+          "retryReasons": [],
+          "startAt": 1757747211287,
+          "status": "passed",
+          "title": "应该正确验证数组长度"
+        },
+        {
+          "ancestorTitles": [
+            "Web3 College 综合测试套件",
+            "✅ 错误检测测试 (PASS)"
+          ],
+          "duration": 0,
+          "failing": false,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "Web3 College 综合测试套件 ✅ 错误检测测试 (PASS) 应该正确验证对象属性",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 2,
+          "retryReasons": [],
+          "startAt": 1757747211287,
+          "status": "passed",
+          "title": "应该正确验证对象属性"
         },
         {
           "ancestorTitles": [
@@ -257,7 +218,7 @@
           "location": null,
           "numPassingAsserts": 0,
           "retryReasons": [],
-          "startAt": 1757336012949,
+          "startAt": 1757747211288,
           "status": "todo",
           "title": "应该实现用户注册功能"
         },
@@ -275,7 +236,7 @@
           "location": null,
           "numPassingAsserts": 0,
           "retryReasons": [],
-          "startAt": 1757336012950,
+          "startAt": 1757747211288,
           "status": "todo",
           "title": "应该实现课程购买功能"
         },
@@ -293,7 +254,7 @@
           "location": null,
           "numPassingAsserts": 0,
           "retryReasons": [],
-          "startAt": 1757336012950,
+          "startAt": 1757747211288,
           "status": "todo",
           "title": "应该实现支付系统集成"
         },
@@ -311,7 +272,7 @@
           "location": null,
           "numPassingAsserts": 0,
           "retryReasons": [],
-          "startAt": 1757336012950,
+          "startAt": 1757747211288,
           "status": "todo",
           "title": "应该实现用户权限管理"
         },
@@ -329,7 +290,7 @@
           "location": null,
           "numPassingAsserts": 0,
           "retryReasons": [],
-          "startAt": 1757336012950,
+          "startAt": 1757747211288,
           "status": "todo",
           "title": "应该实现课程评价系统"
         },
@@ -347,7 +308,7 @@
           "location": null,
           "numPassingAsserts": 1,
           "retryReasons": [],
-          "startAt": 1757336012950,
+          "startAt": 1757747211288,
           "status": "passed",
           "title": "应该正确处理 Promise 成功"
         },
@@ -356,7 +317,7 @@
             "Web3 College 综合测试套件",
             "🔄 异步功能测试"
           ],
-          "duration": 1,
+          "duration": 3,
           "failing": false,
           "failureDetails": [],
           "failureMessages": [],
@@ -365,7 +326,7 @@
           "location": null,
           "numPassingAsserts": 1,
           "retryReasons": [],
-          "startAt": 1757336012950,
+          "startAt": 1757747211288,
           "status": "passed",
           "title": "应该正确处理 Promise 失败"
         },
@@ -374,7 +335,7 @@
             "Web3 College 综合测试套件",
             "🔄 异步功能测试"
           ],
-          "duration": 101,
+          "duration": 102,
           "failing": false,
           "failureDetails": [],
           "failureMessages": [],
@@ -383,7 +344,7 @@
           "location": null,
           "numPassingAsserts": 1,
           "retryReasons": [],
-          "startAt": 1757336012951,
+          "startAt": 1757747211291,
           "status": "passed",
           "title": "应该正确处理 setTimeout"
         },
@@ -401,7 +362,7 @@
           "location": null,
           "numPassingAsserts": 2,
           "retryReasons": [],
-          "startAt": 1757336013053,
+          "startAt": 1757747211393,
           "status": "passed",
           "title": "应该正确模拟函数调用"
         },
@@ -419,7 +380,7 @@
           "location": null,
           "numPassingAsserts": 1,
           "retryReasons": [],
-          "startAt": 1757336013054,
+          "startAt": 1757747211394,
           "status": "passed",
           "title": "应该正确模拟返回值"
         },
@@ -437,7 +398,7 @@
           "location": null,
           "numPassingAsserts": 2,
           "retryReasons": [],
-          "startAt": 1757336013054,
+          "startAt": 1757747211394,
           "status": "passed",
           "title": "应该处理空数组"
         },
@@ -455,7 +416,7 @@
           "location": null,
           "numPassingAsserts": 3,
           "retryReasons": [],
-          "startAt": 1757336013054,
+          "startAt": 1757747211394,
           "status": "passed",
           "title": "应该处理 null 和 undefined"
         },
@@ -473,7 +434,7 @@
           "location": null,
           "numPassingAsserts": 2,
           "retryReasons": [],
-          "startAt": 1757336013054,
+          "startAt": 1757747211394,
           "status": "passed",
           "title": "应该处理数字边界值"
         },
@@ -482,7 +443,7 @@
             "Web3 College 综合测试套件",
             "🏢 业务逻辑测试"
           ],
-          "duration": 1,
+          "duration": 0,
           "failing": false,
           "failureDetails": [],
           "failureMessages": [],
@@ -491,7 +452,7 @@
           "location": null,
           "numPassingAsserts": 2,
           "retryReasons": [],
-          "startAt": 1757336013054,
+          "startAt": 1757747211394,
           "status": "passed",
           "title": "应该正确过滤已发布的课程"
         },
@@ -509,7 +470,7 @@
           "location": null,
           "numPassingAsserts": 1,
           "retryReasons": [],
-          "startAt": 1757336013055,
+          "startAt": 1757747211394,
           "status": "passed",
           "title": "应该正确计算课程总价值"
         },
@@ -518,7 +479,7 @@
             "Web3 College 综合测试套件",
             "🏢 业务逻辑测试"
           ],
-          "duration": 0,
+          "duration": 1,
           "failing": false,
           "failureDetails": [],
           "failureMessages": [],
@@ -527,12 +488,12 @@
           "location": null,
           "numPassingAsserts": 2,
           "retryReasons": [],
-          "startAt": 1757336013055,
+          "startAt": 1757747211394,
           "status": "passed",
           "title": "应该正确查找特定作者的课程"
         }
       ],
-      "failureMessage": "\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mWeb3 College 综合测试套件 › ❌ 错误场景测试 (FAIL) › 应该检测到错误的计算结果\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\n    Expected: \u001b[32m5\u001b[39m\n    Received: \u001b[31m4\u001b[39m\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 41 |\u001b[39m     it(\u001b[32m'应该检测到错误的计算结果'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 42 |\u001b[39m       \u001b[90m// 这个测试会失败，因为 2+2 不等于 5\u001b[39m\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 43 |\u001b[39m       expect(\u001b[35m2\u001b[39m \u001b[33m+\u001b[39m \u001b[35m2\u001b[39m)\u001b[33m.\u001b[39mtoBe(\u001b[35m5\u001b[39m)\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 44 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 45 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 46 |\u001b[39m     it(\u001b[32m'应该检测到错误的字符串匹配'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.toBe (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/unit/test.spec.ts\u001b[39m\u001b[0m\u001b[2m:43:21)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mWeb3 College 综合测试套件 › ❌ 错误场景测试 (FAIL) › 应该检测到错误的字符串匹配\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\n    Expected substring: \u001b[32m\"Vue\"\u001b[39m\n    Received string:    \u001b[31m\"Web3 开发课程\"\u001b[39m\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 47 |\u001b[39m       \u001b[36mconst\u001b[39m courseTitle \u001b[33m=\u001b[39m \u001b[32m\"Web3 开发课程\"\u001b[39m\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 48 |\u001b[39m       \u001b[90m// 这个测试会失败，因为字符串不包含 \"Vue\"\u001b[39m\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 49 |\u001b[39m       expect(courseTitle)\u001b[33m.\u001b[39mtoContain(\u001b[32m\"Vue\"\u001b[39m)\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 50 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 51 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 52 |\u001b[39m     it(\u001b[32m'应该检测到错误的数组长度'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.toContain (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/unit/test.spec.ts\u001b[39m\u001b[0m\u001b[2m:49:27)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mWeb3 College 综合测试套件 › ❌ 错误场景测试 (FAIL) › 应该检测到错误的数组长度\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveLength\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n    Expected length: \u001b[32m5\u001b[39m\n    Received length: \u001b[31m3\u001b[39m\n    Received array:  \u001b[31m[\"React\", \"Vue\", \"Angular\"]\u001b[39m\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 53 |\u001b[39m       \u001b[36mconst\u001b[39m courses \u001b[33m=\u001b[39m [\u001b[32m\"React\"\u001b[39m\u001b[33m,\u001b[39m \u001b[32m\"Vue\"\u001b[39m\u001b[33m,\u001b[39m \u001b[32m\"Angular\"\u001b[39m]\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 54 |\u001b[39m       \u001b[90m// 这个测试会失败，因为数组长度是3，不是5\u001b[39m\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 55 |\u001b[39m       expect(courses)\u001b[33m.\u001b[39mtoHaveLength(\u001b[35m5\u001b[39m)\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 57 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 58 |\u001b[39m     it(\u001b[32m'应该检测到不存在的对象属性'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.toHaveLength (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/unit/test.spec.ts\u001b[39m\u001b[0m\u001b[2m:55:23)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mWeb3 College 综合测试套件 › ❌ 错误场景测试 (FAIL) › 应该检测到不存在的对象属性\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveProperty\u001b[2m(\u001b[22m\u001b[32mpath\u001b[39m\u001b[2m)\u001b[22m\n\n    Expected path: \u001b[32m\"price\"\u001b[39m\n    Received path: \u001b[31m[]\u001b[39m\n\n    Received value: \u001b[31m{\"id\": 1, \"title\": \"区块链基础\"}\u001b[39m\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 62 |\u001b[39m       }\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 63 |\u001b[39m       \u001b[90m// 这个测试会失败，因为对象没有 price 属性\u001b[39m\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 64 |\u001b[39m       expect(course)\u001b[33m.\u001b[39mtoHaveProperty(\u001b[32m\"price\"\u001b[39m)\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m    |\u001b[39m                      \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 65 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 66 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 67 |\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.toHaveProperty (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/unit/test.spec.ts\u001b[39m\u001b[0m\u001b[2m:64:22)\u001b[22m\u001b[2m\u001b[22m\n"
+      "failureMessage": null
     }
   ],
   "wasInterrupted": false

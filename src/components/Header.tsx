@@ -35,13 +35,21 @@ const Header: React.FC = () => {
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 			<div className="container flex h-16 items-center">
 				{/* 应用标题 */}
-				<div
-					className="flex items-center space-x-2 cursor-pointer"
+				<button
+					type="button"
+					className="flex items-center space-x-2 cursor-pointer bg-transparent border-none p-0"
 					onClick={() => navigate("/")}
+					onKeyDown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							navigate("/");
+						}
+					}}
+					aria-label="返回首页"
 				>
 					<BookOpen className="h-6 w-6 text-primary" />
 					<h1 className="text-xl font-bold">Web3大学</h1>
-				</div>
+				</button>
 
 				{/* 导航按钮 */}
 				<nav className="flex items-center space-x-4 ml-8">

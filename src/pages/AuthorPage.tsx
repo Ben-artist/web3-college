@@ -1,6 +1,6 @@
 import { BookOpen, Edit3, Eye, Plus, User } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FETCH_URL } from "@/lib/constant";
 import { formatAddressDisplay } from "@/lib/utils";
@@ -29,6 +29,7 @@ const AuthorPage: React.FC = () => {
 	const [verificationMessage, setVerificationMessage] = useState("");
 	const [showAutoVerifyDialog, setShowAutoVerifyDialog] = useState(false);
 	const navigate = useNavigate();
+	const usernameId = useId();
 
 	// 模拟作者创建的课程数据
 	useEffect(() => {
@@ -362,11 +363,11 @@ const AuthorPage: React.FC = () => {
 					</DialogHeader>
 					<div className="space-y-4 py-4">
 						<div className="space-y-2">
-							<label htmlFor="username" className="text-sm font-medium">
+							<label htmlFor={usernameId} className="text-sm font-medium">
 								用户名
 							</label>
 							<Input
-								id="username"
+								id={usernameId}
 								type="text"
 								placeholder="请输入新的用户名"
 								value={newUsername}

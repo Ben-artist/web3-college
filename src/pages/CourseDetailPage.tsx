@@ -216,9 +216,9 @@ const CourseDetailPage: React.FC = () => {
 					</CardHeader>
 					<CardContent>
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-							{course.buyers.map((buyer: string, index: number) => (
+							{course.buyers.map((buyer: string) => (
 								<div
-									key={index}
+									key={buyer}
 									className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg"
 								>
 									<div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
